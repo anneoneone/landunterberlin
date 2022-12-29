@@ -1,23 +1,27 @@
+p {}
 
-p {
-}
-
-a { 
-  font-weight: bold;
-  text-decoration: none;
-  color: #2a2a2a;
+a {
+    font-weight: bold;
+    text-decoration: none;
+    color: #2a2a2a;
 }
 
 a:visited {
-  font-weight: normal;
+    font-weight: normal;
 }
 
 a:hover {
-  text-decoration: underline;
+    text-decoration: underline;
 }
 
-
-
+.div_element {
+    position: absolute;
+    /* height: 50px; */
+    /* width: 50px; */
+    /* top: 50%; */
+    /* left: 50%; */
+    background-color: royalblue;
+}
 
 
 
@@ -33,44 +37,30 @@ a:hover {
    Media Queries
    ========================================================================== */
 
- /*==========  Non-Mobile First Method  ==========*/
+/*==========  Non-Mobile First Method  ==========*/
 
-    /*Above */
-    @media only screen and (min-width : 1201px) {
+/*Above */
+@media only screen and (min-width : 1201px) {}
 
-    }
+/* Large Devices, Wide Screens */
+@media only screen and (max-width : 1200px) {}
 
-    /* Large Devices, Wide Screens */
-    @media only screen and (max-width : 1200px) {
+/* Medium Devices, Desktops */
+@media only screen and (max-width : 992px) {}
 
-    }
+/* Small Devices, Tablets */
+@media only screen and (max-width : 768px) {}
 
-    /* Medium Devices, Desktops */
-    @media only screen and (max-width : 992px) {
+/* Extra Small Devices, Phones */
+@media only screen and (max-width : 480px) {}
 
-    }
-
-    /* Small Devices, Tablets */
-    @media only screen and (max-width : 768px) {
-
-    }
-
-    /* Extra Small Devices, Phones */ 
-    @media only screen and (max-width : 480px) {
-
-    }
-
-    /* Custom, iPhone Retina */ 
-    @media only screen and (max-width : 320px) {
-        
-    }
+/* Custom, iPhone Retina */
+@media only screen and (max-width : 320px) {}
 
 @media print,
-       (-o-min-device-pixel-ratio: 5/4),
-       (-webkit-min-device-pixel-ratio: 1.25),
-       (min-resolution: 120dpi) {
-
-}
+(-o-min-device-pixel-ratio: 5/4),
+(-webkit-min-device-pixel-ratio: 1.25),
+(min-resolution: 120dpi) {}
 
 /* ==========================================================================
    Helper classes
@@ -125,6 +115,7 @@ a:hover {
    ========================================================================== */
 
 @media print {
+
     *,
     *:before,
     *:after {
