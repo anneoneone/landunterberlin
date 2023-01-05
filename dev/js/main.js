@@ -10,6 +10,9 @@ BlockViewport.prototype.init = function () {
 	console.log('wavy');
 
 	create_elements();
+
+	manipulate_elements();
+
 }
 
 /**
@@ -33,7 +36,10 @@ function put_div(e_prop, w_prop) {
 	div.style.height = e_prop.size + 'px';
 	div.style.width = e_prop.size + 'px';
 	div.style.backgroundColor = get_random_rgb();
+	div.setAttribute("Id", "id" + e_prop.index)
 	document.body.appendChild(div);
+
+	e_prop.index++;
 }
 
 function create_elements() {
@@ -41,8 +47,9 @@ function create_elements() {
 
 	// element properties
 	let e_prop = {
-		distance: 150, // px
+		distance: 15, // px
 		size: 5, // px
+		index: 0,
 		curr_pos_x: 0,
 		curr_pos_y: 0,
 		offset_x: 0,
@@ -88,10 +95,21 @@ function create_elements() {
 			e_prop.curr_pos_x = index_x * acc_distance;
 
 			// if statement to draw a rectangle
-			if (index_y == 0 || index_x == 0 || index_y == e_prop.no_y - 1 || index_x == e_prop.no_x - 1)
-				// create element and set properties
-				put_div(e_prop, w_prop);
+			// if (index_y == 0 || index_x == 0 || index_y == e_prop.no_y - 1 || index_x == e_prop.no_x - 1)
+			// create element and set properties
+			put_div(e_prop, w_prop);
 
 		}
 	}
+}
+
+function manipulate_elements() {
+	for (let index = 0; index < 5; index++) {
+		const element = "id" + index;
+
+		console.log(element);
+		$(element).css("backgroundColor", "white");
+
+	}
+
 }
