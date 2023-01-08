@@ -1,17 +1,61 @@
 /* eslint-disable */
 
-function BlockViewport() {
-	this.params = {}
-
-	this.init();
+// element properties
+let e_prop = {
+	distance: 15, // px
+	size: 5, // px
+	index: 0,
+	curr_pos_x: 0,
+	curr_pos_y: 0,
+	offset_x: 0,
+	offset_y: 0,
+	no_x: 0, // number of elements on x axes
+	no_y: 0, // number of elements on y axes
 }
 
-BlockViewport.prototype.init = function () {
-	console.log('wavy');
+// window properties
+let w_prop = {
+	w_width: window.innerWidth, // window width
+	w_height: window.innerHeight, // window width
+	padding_y: 60,
+	padding_x: 10,
+	avail_width: function () {
+		return this.w_width - 2 * this.padding_x;
+	},
+	avail_height: function () {
+		return this.w_height - 2 * this.padding_y;
+	}
+}
+
+// function BlockViewport() {
+// 	this.params = {}
+
+// 	this.init();
+// }
+
+// BlockViewport.prototype.init = function () {
+// 	console.log('wavy');
+
+// 	create_elements();
+
+// 	manipulate_elements();
+
+// }
+
+
+function setup() {
+	let canvas = createCanvas(windowWidth, windowHeight - windowHeight * 0.01);
+	canvas.parent('container');
+
+	frameRate(12);
+	// noLoop();
+}
+
+function draw() {
+	background('#111');
 
 	create_elements();
 
-	manipulate_elements();
 
 }
 
@@ -20,7 +64,9 @@ BlockViewport.prototype.init = function () {
  * @returns String with random rgb colors
  */
 function get_random_rgb() {
-	return 'rgb(' + Math.random() * 255 + ',' + Math.random() * 255 + ',' + Math.random() * 255 + ')';
+	// return 'rgb(' + Math.random() * 255 + ',' + Math.random() * 255 + ',' + Math.random() * 255 + ')';
+	let rgb_color = { r: Math.random() * 255, g: Math.random() * 255, b: Math.random() * 255 }
+	return rgb_color;
 }
 
 /**
@@ -42,35 +88,16 @@ function put_div(e_prop, w_prop) {
 	e_prop.index++;
 }
 
+function put_point() {
+	let color = get_random_rgb();
+	stroke(color.r, color.g, color.b);
+	strokeWeight(e_prop.size);
+	point(e_prop.offset_x + w_prop.padding_x + e_prop.curr_pos_x, e_prop.offset_y + w_prop.padding_y + e_prop.curr_pos_y);
+}
+
 function create_elements() {
-	console.log("create elements()");
+	// console.log("create elements()");
 
-	// element properties
-	let e_prop = {
-		distance: 15, // px
-		size: 5, // px
-		index: 0,
-		curr_pos_x: 0,
-		curr_pos_y: 0,
-		offset_x: 0,
-		offset_y: 0,
-		no_x: 0, // number of elements on x axes
-		no_y: 0, // number of elements on y axes
-	}
-
-	// window properties
-	let w_prop = {
-		w_width: window.innerWidth, // window width
-		w_height: window.innerHeight, // window width
-		padding_y: 60,
-		padding_x: 10,
-		avail_width: function () {
-			return this.w_width - 2 * this.padding_x;
-		},
-		avail_height: function () {
-			return this.w_height - 2 * this.padding_y;
-		}
-	}
 
 	// calculate accumulated distance for element size and distance between two elements
 	let acc_distance = e_prop.distance + e_prop.size;
@@ -97,19 +124,9 @@ function create_elements() {
 			// if statement to draw a rectangle
 			// if (index_y == 0 || index_x == 0 || index_y == e_prop.no_y - 1 || index_x == e_prop.no_x - 1)
 			// create element and set properties
-			put_div(e_prop, w_prop);
+			put_point();
+			// put_div(e_prop, w_prop);
 
 		}
 	}
-}
-
-function manipulate_elements() {
-	for (let index = 0; index < 5; index++) {
-		const element = "id" + index;
-
-		console.log(element);
-		$(element).css("backgroundColor", "white");
-
-	}
-
 }
