@@ -2,7 +2,7 @@
 
 // element properties
 let e_prop = {
-	distance: 15, // px
+	distance: 25, // px
 	size: 5, // px
 	index: 0,
 	curr_pos_x: 0,
@@ -27,6 +27,7 @@ let w_prop = {
 	}
 }
 
+
 // function BlockViewport() {
 // 	this.params = {}
 
@@ -41,22 +42,28 @@ let w_prop = {
 // 	manipulate_elements();
 
 // }
+let letters;
 
+function preload() {
+	let url = "js/letters.json";
+	letters = loadJSON(url);
+
+}
 
 function setup() {
 	let canvas = createCanvas(windowWidth, windowHeight - windowHeight * 0.01);
 	canvas.parent('container');
 
-	frameRate(12);
+	frameRate(7);
+
 	// noLoop();
 }
 
 function draw() {
 	background('#111');
 
+	draw_word(letters.hello);
 	create_elements();
-
-
 }
 
 /**
@@ -64,9 +71,8 @@ function draw() {
  * @returns String with random rgb colors
  */
 function get_random_rgb() {
-	// return 'rgb(' + Math.random() * 255 + ',' + Math.random() * 255 + ',' + Math.random() * 255 + ')';
-	let rgb_color = { r: Math.random() * 255, g: Math.random() * 255, b: Math.random() * 255 }
-	return rgb_color;
+	offset = 70;
+	return { r: Math.random() * 200 + offset, g: Math.random() * 220 + offset, b: Math.random() * 15 + offset };
 }
 
 /**
@@ -74,20 +80,6 @@ function get_random_rgb() {
  * @param {*} e_prop element properties
  * @param {*} w_prop window properties
  */
-function put_div(e_prop, w_prop) {
-	let div = document.createElement("div");
-	div.classList.add('div_element');
-	div.style.top = e_prop.offset_y + w_prop.padding_y + e_prop.curr_pos_y + 'px';
-	div.style.left = e_prop.offset_x + w_prop.padding_x + e_prop.curr_pos_x + 'px';
-	div.style.height = e_prop.size + 'px';
-	div.style.width = e_prop.size + 'px';
-	div.style.backgroundColor = get_random_rgb();
-	div.setAttribute("Id", "id" + e_prop.index)
-	document.body.appendChild(div);
-
-	e_prop.index++;
-}
-
 function put_point() {
 	let color = get_random_rgb();
 	stroke(color.r, color.g, color.b);
@@ -96,9 +88,6 @@ function put_point() {
 }
 
 function create_elements() {
-	// console.log("create elements()");
-
-
 	// calculate accumulated distance for element size and distance between two elements
 	let acc_distance = e_prop.distance + e_prop.size;
 
@@ -122,11 +111,75 @@ function create_elements() {
 			e_prop.curr_pos_x = index_x * acc_distance;
 
 			// if statement to draw a rectangle
-			// if (index_y == 0 || index_x == 0 || index_y == e_prop.no_y - 1 || index_x == e_prop.no_x - 1)
 			// create element and set properties
-			put_point();
-			// put_div(e_prop, w_prop);
+			if (index_y == 0 || index_x == 0 || index_y == e_prop.no_y - 1 || index_x == e_prop.no_x - 1) {
+				let point = new Point(e_prop.offset_x + w_prop.padding_x + e_prop.curr_pos_x, e_prop.offset_y + w_prop.padding_y + e_prop.curr_pos_y);
+				point.move_and_display();
+			}
 
 		}
+	}
+}
+
+function draw_word(word) {
+	let offset = { x: 0, y: 1 };
+
+	for (let [key, word] of Object.entries(letters)) {
+		for (let [key, letter] of Object.entries(word)) {
+			offset.x++;
+
+			draw_single_letter(letter, offset);
+		}
+		offset.x = 0;
+		offset.y++;
+	}
+}
+
+function draw_single_letter(letter, offset) {
+	// let letter = letters.h;
+
+	for (let index = 0; index < letter.x.length; index++) {
+		let letter_p = new Point(letter.x[index] * 12 + 100 * offset.x, letter.y[index] * 12 + 150 * offset.y);
+		letter_p.display();
+		// letter_p.move_and_display();
+	}
+}
+
+// point class
+class Point {
+	constructor(x, y) {
+		this.x = x;
+		this.y = y;
+		this.diameter = 5; // e_prop.size;
+		this.speed = 3;
+	}
+
+	move(x, y) {
+		this.x += x;
+		this.y += y;
+	}
+
+	display() {
+		// ellipse(this.x, this.y, this.diameter, this.diameter);
+		point(this.x, this.y);
+	}
+
+	set_color() {
+		let color = get_random_rgb();
+		stroke(color.r, color.g, color.b);
+		strokeWeight(this.diameter);
+	}
+
+	move_and_display() {
+		let rand_x = random(-this.speed, this.speed);
+		let rand_y = random(-this.speed, this.speed);
+
+		let color = get_random_rgb();
+		this.set_color(color.r, color.g, color.b);
+
+		this.move(rand_x, rand_y);
+		this.display();
+		this.move(-rand_x, -rand_y);
+		this.display();
 	}
 }
