@@ -2,47 +2,30 @@
 
 // element properties
 let e_prop = {
-	distance: 25, // px
-	size: 5, // px
-	index: 0,
-	curr_pos_x: 0,
-	curr_pos_y: 0,
-	offset_x: 0,
-	offset_y: 0,
-	no_x: 0, // number of elements on x axes
-	no_y: 0, // number of elements on y axes
+	distance_points: 8, // distance between two points (px)
+	distance_letters: 60, // distance between two points (px)
+	size: 4, // size of point (px)
+	norm_pos: { x: 0, y: 1 }, // normalized position of letter on grid 
+	offset: { x: 0, y: 0 }, // > does not change anything - WHY? 
+	number_elements: { x: 0, y: 0 } // number of elements on axes
 }
 
 // window properties
 let w_prop = {
 	w_width: window.innerWidth, // window width
 	w_height: window.innerHeight, // window width
-	padding_y: 60,
-	padding_x: 10,
+	padding: { x: 30, y: 60 },
 	avail_width: function () {
-		return this.w_width - 2 * this.padding_x;
+		return this.w_width - 2 * this.padding.x;
 	},
 	avail_height: function () {
-		return this.w_height - 2 * this.padding_y;
-	}
+		return this.w_height - 2 * this.padding.y;
+	},
+	max_letters: { x: 8, y: 4 }
 }
 
-
-// function BlockViewport() {
-// 	this.params = {}
-
-// 	this.init();
-// }
-
-// BlockViewport.prototype.init = function () {
-// 	console.log('wavy');
-
-// 	create_elements();
-
-// 	manipulate_elements();
-
-// }
 let letters, text;
+let offset;
 
 function preload() {
 	let url = "js/alphabet.json";
@@ -56,6 +39,8 @@ function setup() {
 	let canvas = createCanvas(windowWidth, windowHeight - windowHeight * 0.01);
 	canvas.parent('container');
 
+	calculate_properties()
+
 	frameRate(7);
 
 	// noLoop();
@@ -64,12 +49,17 @@ function setup() {
 function draw() {
 	background('#111');
 
-	for (let text_index = 0; text_index < 2; text_index++) {
-		// console.log("hi " + text[0][text_index]);
+	// for (let text_index = 0; text_index < 1; text_index++) {
+	// console.log("hi " + text[0][text_index]);
+	// draw_frame();
 
-		draw_word(text[0][text_index]);
-	}
-	create_elements();
+	draw_word(text[0][0], { x: 1, y: 1 });
+	draw_word(text[0][1], { x: 1, y: 2 });
+	draw_word(")", { x: 1, y: 3 });
+
+	// draw_word(text[1][0]);
+	// draw_word(text[1][1]);
+	// }
 }
 
 /**
@@ -82,44 +72,57 @@ function get_random_rgb() {
 }
 
 /**
- * generate a div and place it in DOM
- * @param {*} e_prop element properties
- * @param {*} w_prop window properties
+ * @brief Set the normalized position of the letters in the grid
+ * @summary 
  */
-function put_point() {
-	let color = get_random_rgb();
-	stroke(color.r, color.g, color.b);
-	strokeWeight(e_prop.size);
-	point(e_prop.offset_x + w_prop.padding_x + e_prop.curr_pos_x, e_prop.offset_y + w_prop.padding_y + e_prop.curr_pos_y);
+function set_norm_pos() {
+	// new line after 9 letters
+	if (e_prop.norm_pos.x > 8) {
+		e_prop.norm_pos.x = 1;
+
+		if (e_prop.norm_pos.y > 4) {
+			e_prop.norm_pos.y = 1;
+		} else {
+			e_prop.norm_pos.y++;
+		}
+	} else {
+		e_prop.norm_pos.x++;
+
+	}
 }
 
-function create_elements() {
+function calculate_properties() {
 	// calculate accumulated distance for element size and distance between two elements
-	let acc_distance = e_prop.distance + e_prop.size;
+	let acc_distance = e_prop.distance_points + e_prop.size;
 
 	// calculate number of elements per row/col
-	e_prop.no_x = w_prop.avail_width() / acc_distance | 0; // | 0 is bitwise operator to cut decimal
-	e_prop.no_y = w_prop.avail_height() / acc_distance | 0; // | 0 is bitwise operator to cut decimal
+	e_prop.number_elements.x = w_prop.avail_width() / acc_distance | 0; // | 0 is bitwise operator to cut decimal
+	e_prop.number_elements.y = w_prop.avail_height() / acc_distance | 0; // | 0 is bitwise operator to cut decimal
 	// calculate total width between first and last element in row/col
-	let total_width_x = e_prop.no_x * e_prop.size + (e_prop.no_x - 1) * e_prop.distance;
-	let total_width_y = e_prop.no_y * e_prop.size + (e_prop.no_y - 1) * e_prop.distance;
+	let total_width_x = e_prop.number_elements.x * e_prop.size + (e_prop.number_elements.x - 1) * e_prop.distance_points;
+	let total_width_y = e_prop.number_elements.y * e_prop.size + (e_prop.number_elements.y - 1) * e_prop.distance_points;
 	// calculate the offset which means the left space of the available width/height
-	e_prop.offset_x = (w_prop.avail_width() - total_width_x) / 2;
-	e_prop.offset_y = (w_prop.avail_height() - total_width_y) / 2;
+	e_prop.offset.x = (w_prop.avail_width() - total_width_x) / 2;
+	e_prop.offset.y = (w_prop.avail_height() - total_width_y) / 2;
+
+}
 
 
-	for (index_y = 0; index_y < e_prop.no_y; index_y++) {
+function draw_frame() {
+	let acc_distance = e_prop.distance_points + e_prop.size;
+
+	for (index_y = 0; index_y < e_prop.number_elements.y; index_y++) {
 		// calculate top position of element
-		e_prop.curr_pos_y = index_y * acc_distance;
+		e_prop.norm_pos.y = index_y * acc_distance;
 
-		for (index_x = 0; index_x < e_prop.no_x; index_x++) {
+		for (index_x = 0; index_x < e_prop.number_elements.x; index_x++) {
 			// calculate left position of element
-			e_prop.curr_pos_x = index_x * acc_distance;
+			e_prop.norm_pos.x = index_x * acc_distance;
 
 			// if statement to draw a rectangle
 			// create element and set properties
-			if (index_y == 0 || index_x == 0 || index_y == e_prop.no_y - 1 || index_x == e_prop.no_x - 1) {
-				let point = new Point(e_prop.offset_x + w_prop.padding_x + e_prop.curr_pos_x, e_prop.offset_y + w_prop.padding_y + e_prop.curr_pos_y);
+			if (index_y == 0 || index_x == 0 || index_y == e_prop.number_elements.y - 1 || index_x == e_prop.number_elements.x - 1) {
+				let point = new Point(e_prop.offset.x + w_prop.padding.x + e_prop.norm_pos.x, e_prop.offset.y + w_prop.padding.y + e_prop.norm_pos.y, e_prop.size);
 				point.move_and_display();
 			}
 
@@ -127,10 +130,8 @@ function create_elements() {
 	}
 }
 
-function draw_word(word) {
-	let offset = { x: 1, y: 1 };
-
-	// console.log(word[0]);
+function draw_word(word, start_pos) {
+	e_prop.norm_pos = start_pos;
 
 	for (let letter of word) {
 		for (let [key, pos] of Object.entries(letters)) {
@@ -140,64 +141,26 @@ function draw_word(word) {
 			// console.log("letter " + letter + "lib_letter " + lib_letter);
 
 			if (letter == key) {
-				draw_single_letter(pos, offset);
-				offset.x++;
-
+				set_norm_pos();
+				draw_single_letter(pos);
 			}
 
-			// new line after 9 letters
-			if (offset.x == 9) {
-				offset.x = 1;
-				offset.y++;
-			}
 		}
 	}
+
 }
 
-function draw_single_letter(letter, offset) {
+function draw_single_letter(letter) {
 
 	for (let index = 0; index < letter.length; index++) {
-		let letter_p = new Point(letter[index][0] * e_prop.offset_x + 105 * offset.x, letter[index][1] * e_prop.offset_x + 105 * offset.y);
-		letter_p.display();
+		let pos_x = letter[index][0] * e_prop.offset.x + (e_prop.distance_letters * e_prop.norm_pos.x);
+		let pos_y = letter[index][1] * e_prop.offset.y + (e_prop.distance_letters * e_prop.norm_pos.y);
+
+		// console.log("uno " + letter[index][0] * e_prop.offset.x + " due " + (100 * e_prop.norm_pos.x));
+
+		let letter_p = new Point(pos_x, pos_y, e_prop.size);
+		letter_p.show();
 		// letter_p.move_and_display();
 	}
-}
 
-// point class
-class Point {
-	constructor(x, y) {
-		this.x = x;
-		this.y = y;
-		this.diameter = 5; // e_prop.size;
-		this.speed = 3;
-	}
-
-	move(x, y) {
-		this.x += x;
-		this.y += y;
-	}
-
-	display() {
-		// ellipse(this.x, this.y, this.diameter, this.diameter);
-		point(this.x, this.y);
-	}
-
-	set_color() {
-		let color = get_random_rgb();
-		stroke(color.r, color.g, color.b);
-		strokeWeight(this.diameter);
-	}
-
-	move_and_display() {
-		let rand_x = random(-this.speed, this.speed);
-		let rand_y = random(-this.speed, this.speed);
-
-		let color = get_random_rgb();
-		this.set_color(color.r, color.g, color.b);
-
-		this.move(rand_x, rand_y);
-		this.display();
-		this.move(-rand_x, -rand_y);
-		this.display();
-	}
 }
