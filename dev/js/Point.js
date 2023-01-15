@@ -26,6 +26,7 @@ class Point {
     get_random_rgb() {
         let offset = 70;
         return { r: Math.random() * 200 + offset, g: Math.random() * 220 + offset, b: Math.random() * 15 + offset };
+        // return { r: 255, g: 255, b: 255 };
     }
 
     set_color() {
@@ -35,7 +36,7 @@ class Point {
     }
 
     show() {
-        let color = get_random_rgb();
+        let color = this.get_random_rgb();
         this.set_color(color.r, color.g, color.b);
 
         this.display();
