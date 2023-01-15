@@ -42,11 +42,13 @@ let w_prop = {
 // 	manipulate_elements();
 
 // }
-let letters;
+let letters, text;
 
 function preload() {
-	let url = "js/letters.json";
+	let url = "js/alphabet.json";
 	letters = loadJSON(url);
+	url = "js/texts.json";
+	text = loadJSON(url);
 
 }
 
@@ -62,7 +64,11 @@ function setup() {
 function draw() {
 	background('#111');
 
-	draw_word(letters.hello);
+	for (let text_index = 0; text_index < 2; text_index++) {
+		// console.log("hi " + text[0][text_index]);
+
+		draw_word(text[0][text_index]);
+	}
 	create_elements();
 }
 
@@ -122,24 +128,36 @@ function create_elements() {
 }
 
 function draw_word(word) {
-	let offset = { x: 0, y: 1 };
+	let offset = { x: 1, y: 1 };
 
-	for (let [key, word] of Object.entries(letters)) {
-		for (let [key, letter] of Object.entries(word)) {
-			offset.x++;
+	// console.log(word[0]);
 
-			draw_single_letter(letter, offset);
+	for (let letter of word) {
+		for (let [key, pos] of Object.entries(letters)) {
+			// for (let lib_letter of Object.keys(letters)) {
+
+			// var childnames = Object.keys(letters);
+			// console.log("letter " + letter + "lib_letter " + lib_letter);
+
+			if (letter == key) {
+				draw_single_letter(pos, offset);
+				offset.x++;
+
+			}
+
+			// new line after 9 letters
+			if (offset.x == 9) {
+				offset.x = 1;
+				offset.y++;
+			}
 		}
-		offset.x = 0;
-		offset.y++;
 	}
 }
 
 function draw_single_letter(letter, offset) {
-	// let letter = letters.h;
 
-	for (let index = 0; index < letter.x.length; index++) {
-		let letter_p = new Point(letter.x[index] * 12 + 100 * offset.x, letter.y[index] * 12 + 150 * offset.y);
+	for (let index = 0; index < letter.length; index++) {
+		let letter_p = new Point(letter[index][0] * e_prop.offset_x + 105 * offset.x, letter[index][1] * e_prop.offset_x + 105 * offset.y);
 		letter_p.display();
 		// letter_p.move_and_display();
 	}
