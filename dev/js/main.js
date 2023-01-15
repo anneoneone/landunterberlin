@@ -3,9 +3,9 @@
 // element properties
 let e_prop = {
 	distance_points: 8, // distance between two points (px)
-	distance_letters: 60, // distance between two points (px)
+	distance_letters: 50, // distance between two points (px)
 	size: 4, // size of point (px)
-	norm_pos: { x: 0, y: 1 }, // normalized position of letter on grid 
+	norm_pos: { x: 0, y: 0 }, // normalized position of letter on grid 
 	offset: { x: 0, y: 0 }, // > does not change anything - WHY? 
 	number_elements: { x: 0, y: 0 } // number of elements on axes
 }
@@ -50,26 +50,14 @@ function draw() {
 	background('#111');
 
 	// for (let text_index = 0; text_index < 1; text_index++) {
-	// console.log("hi " + text[0][text_index]);
-	// draw_frame();
+	draw_frame();
 
-	draw_word(text[0][0], { x: 1, y: 1 });
-	draw_word(text[0][1], { x: 1, y: 2 });
-	draw_word(")", { x: 1, y: 3 });
+	draw_word(text[0][0], { x: 0, y: 0 });
+	draw_word(text[0][1], { x: 1, y: 3 });
+	draw_word(")", { x: 5, y: 5 });
 
-	// draw_word(text[1][0]);
-	// draw_word(text[1][1]);
-	// }
 }
 
-/**
- * Generate a string with random rgb colors
- * @returns String with random rgb colors
- */
-function get_random_rgb() {
-	offset = 70;
-	return { r: Math.random() * 200 + offset, g: Math.random() * 220 + offset, b: Math.random() * 15 + offset };
-}
 
 /**
  * @brief Set the normalized position of the letters in the grid
@@ -78,7 +66,7 @@ function get_random_rgb() {
 function set_norm_pos() {
 	// new line after 9 letters
 	if (e_prop.norm_pos.x > 8) {
-		e_prop.norm_pos.x = 1;
+		e_prop.norm_pos.x = 0;
 
 		if (e_prop.norm_pos.y > 4) {
 			e_prop.norm_pos.y = 1;
@@ -134,7 +122,7 @@ function draw_word(word, start_pos) {
 	e_prop.norm_pos = start_pos;
 
 	for (let letter of word) {
-		for (let [key, pos] of Object.entries(letters)) {
+		for (let [key, letter_coordinates] of Object.entries(letters)) {
 			// for (let lib_letter of Object.keys(letters)) {
 
 			// var childnames = Object.keys(letters);
@@ -142,7 +130,7 @@ function draw_word(word, start_pos) {
 
 			if (letter == key) {
 				set_norm_pos();
-				draw_single_letter(pos);
+				draw_single_letter(letter_coordinates);
 			}
 
 		}
@@ -150,17 +138,15 @@ function draw_word(word, start_pos) {
 
 }
 
-function draw_single_letter(letter) {
+function draw_single_letter(letter_coordinates) {
 
-	for (let index = 0; index < letter.length; index++) {
-		let pos_x = letter[index][0] * e_prop.offset.x + (e_prop.distance_letters * e_prop.norm_pos.x);
-		let pos_y = letter[index][1] * e_prop.offset.y + (e_prop.distance_letters * e_prop.norm_pos.y);
-
-		// console.log("uno " + letter[index][0] * e_prop.offset.x + " due " + (100 * e_prop.norm_pos.x));
+	for (let index = 0; index < letter_coordinates.length; index++) {
+		let pos_x = letter_coordinates[index][0] * e_prop.offset.x + (e_prop.distance_letters * e_prop.norm_pos.x);
+		let pos_y = letter_coordinates[index][1] * e_prop.offset.y + (e_prop.distance_letters * e_prop.norm_pos.y);
 
 		let letter_p = new Point(pos_x, pos_y, e_prop.size);
-		letter_p.show();
-		// letter_p.move_and_display();
+		// letter_p.show();
+		letter_p.move_and_display();
 	}
 
 }

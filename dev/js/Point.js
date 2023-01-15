@@ -18,8 +18,18 @@ class Point {
         point(this.x, this.y);
     }
 
+
+    /**
+     * Generate a string with random rgb colors
+     * @returns String with random rgb colors
+     */
+    get_random_rgb() {
+        let offset = 70;
+        return { r: Math.random() * 200 + offset, g: Math.random() * 220 + offset, b: Math.random() * 15 + offset };
+    }
+
     set_color() {
-        let color = get_random_rgb();
+        let color = this.get_random_rgb();
         stroke(color.r, color.g, color.b);
         strokeWeight(this.diameter);
     }
@@ -35,7 +45,7 @@ class Point {
         let rand_x = random(-this.speed, this.speed);
         let rand_y = random(-this.speed, this.speed);
 
-        let color = get_random_rgb();
+        let color = this.get_random_rgb();
         this.set_color(color.r, color.g, color.b);
 
         this.move(rand_x, rand_y);
