@@ -2,11 +2,11 @@
 
 // element properties
 let e_prop = {
-	distance_points: 5, // distance between two points (px)
-	distance_letters: 40, // distance between two points (px)
-	size: 4, // size of point (px)
-	norm_pos: { x: 0, y: 0 }, // normalized position of letter on grid 
-	offset: { x: 7, y: 7 }, // > does not change anything - WHY? 
+	distance_points: 10, 			// distance between two points (px)
+	distance_letters: 45, 			// distance between two points (px)
+	size: 4, 						// size of point (px)
+	norm_pos: { x: 0, y: 0 }, 		// normalized position of letter on grid 
+	offset: { x: 7, y: 7 }, 		//  
 	number_elements: { x: 0, y: 0 } // number of elements on axes
 }
 
@@ -14,18 +14,21 @@ let e_prop = {
 let w_prop = {
 	w_width: window.innerWidth, // window width
 	w_height: window.innerHeight, // window width
-	padding: { x: 20, y: 20 },
+	padding: { x: 2, y: 2 },
 	avail_width: function () {
 		return this.w_width - 2 * this.padding.x;
 	},
 	avail_height: function () {
 		return this.w_height - 2 * this.padding.y;
 	},
-	max_letters: { x: 7, y: 4 }
+	max_letters: { x: 6, y: 11 }
 }
 
 let letters, text;
 let offset;
+var point_array = new Array();
+let test_position;
+let canvas;
 
 /**
  * @brief p5.js Standard Function - is called first
@@ -44,12 +47,16 @@ function preload() {
  * @summary create canvas and calculate the properties for all the points
  */
 function setup() {
-	let canvas = createCanvas(windowWidth, windowHeight - windowHeight * 0.01);
+	canvas = createCanvas(windowWidth, windowHeight - windowHeight * 0.01);
 	canvas.parent('container');
+	canvas.mouseWheel(change_position);
+
+	test_position = 100;
 
 	calculate_properties()
 
-	frameRate(7);
+	// frameRate(7);
+	frameRate(25);
 
 	// noLoop();
 }
@@ -63,11 +70,22 @@ function draw() {
 
 	draw_frame(); 							// frame consisting of points
 
-	draw_word(text[0][0], { x: 1, y: 2 }); 	// first word of texts.json
-	draw_word(text[0][1], { x: 1, y: 3 }); 	// second word of texts.json
-	draw_word(text[0][2], { x: 1, y: 4 }); 	// second word of texts.json
-	draw_word(")", { x: 7, y: 5 }); 		// smilie :-)
+	draw_word(text[0][0], { x: 0, y: 1 }); 	// first word of texts.json
+	draw_word(text[0][1], { x: 0, y: 2 }); 	// second word of texts.json
+	draw_word(text[0][2], { x: 0, y: 3 }); 	// second word of texts.json
+	draw_word(text[0][3], { x: 0, y: 4 }); 	// first word of texts.json
+	draw_word(text[0][4], { x: 0, y: 6 }); 	// second word of texts.json
+	draw_word(text[0][5], { x: 0, y: 7 }); 	// second word of texts.json
+	draw_word(text[0][6], { x: 0, y: 8 }); 	// first word of texts.json
+	draw_word(text[0][7], { x: 0, y: 9 }); 	// second word of texts.json
+	draw_word(text[0][8], { x: 0, y: 10 }); 	// second word of texts.json
+	draw_word(text[0][9], { x: 0, y: 11 }); 	// first word of texts.json
+	draw_word(text[0][10], { x: 0, y: 13 }); 	// second word of texts.json
+	// draw_word(text[0][11], { x: 1, y: 12 }); 	// second word of texts.json
 
+	// draw_word(")", { x: 7, y: 5 }); 		// smilie :-)
+
+	test_point_array();
 }
 
 
@@ -79,7 +97,7 @@ function draw() {
 function set_norm_pos() {
 	// new line after 9 letters
 	if (e_prop.norm_pos.x > w_prop.max_letters.x) {
-		e_prop.norm_pos.x = 0;
+		e_prop.norm_pos.x = 1;
 
 		if (e_prop.norm_pos.y > w_prop.max_letters.y) {
 			console.warn("Max. value of e_prop.norm_pos.y reached.")
@@ -178,7 +196,29 @@ function draw_single_letter(letter_coordinates) {
 
 		let letter_p = new Point(pos_x, pos_y, e_prop.size);
 		letter_p.show();
+		point_array.push(letter_p);
 		// letter_p.move_and_display();
 	}
 
+}
+
+function test_point_array() {
+
+	point_array[0].set_position(mouseX - 8, mouseY - 8);
+	point_array[0].display();
+}
+
+function mouseWheel() { }
+function change_position(event) {
+	e_prop.offset.x = e_prop.offset.x + 1;
+	e_prop.offset.y = e_prop.offset.y + 1;
+	// if (event.deltaY > 0) {
+	// 	// w_prop.padding.y = w_prop.padding.y + 10;
+	// 	e_prop.offset.x = e_prop.offset.x + 1;
+	// 	e_prop.offset.y = e_prop.offset.y + 1;
+	// }
+	// else {
+	// 	e_prop.offset.x = e_prop.offset.x - 1;
+	// 	e_prop.offset.y = e_prop.offset.y - 1;
+	// }
 }

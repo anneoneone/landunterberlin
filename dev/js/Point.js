@@ -13,6 +13,11 @@ class Point {
         this.y += y;
     }
 
+    set_position(x, y) {
+        this.x = x;
+        this.y = y;
+    }
+
     display() {
         // ellipse(this.x, this.y, this.diameter, this.diameter);
         point(this.x, this.y);
